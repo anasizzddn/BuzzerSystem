@@ -1,69 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Buzzer</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       margin: 20px;
-      background-color: #f0f0f0; /* light grey background */
+      background-color: #333;
+      color: #fff;
     }
     h1 {
       margin-bottom: 20px;
-      font-size: 1.4em;
+      font-size: 1.8em;
     }
     .buzzer-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
-    }
-    iframe {
-      border: none;
-      width: 90%;
-      max-width: 300px;
-      height: 150px;
-    }
-    .btn-container {
-      display: flex;
-      justify-content: center; /* center horizontally */
-      margin-top: 20px;
+      gap: 20px;
     }
     button {
-      font-size: 16px;
+      font-size: 18px;
       padding: 12px 20px;
+      margin-top: 15px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      background-color: #007bff;
+      background-color: #555;
       color: white;
-      max-width: 250px;
-      width: 100%;
+      width: 90%;
+      max-width: 300px;
+      transition: transform 0.1s ease;
     }
+    button:active { transform: scale(0.95); }
+    p.instructions { font-size: 1.1em; margin-top: 15px; color: #ccc; }
   </style>
 </head>
 <body>
   <h1>Buzzer System</h1>
-  <div class="buzzer-container">
-    <!-- Correct Answer Buzzer -->
-    <iframe src="https://www.myinstants.com/instant/correct-ping-9950/embed/" scrolling="no"></iframe>
+  <p class="instructions">Press <b>1</b> for <b>Correct</b> and <b>2</b> for <b>Wrong</b></p>
 
-    <!-- Wrong Answer Buzzer -->
-    <iframe src="https://www.myinstants.com/instant/wrong-answer-4-51119/embed/" scrolling="no"></iframe>
+  <div class="buzzer-container">
+    <!-- Correct ping (original sound you used) -->
+    <audio id="correctSound" preload="auto" playsinline
+           src="https://www.myinstants.com/media/sounds/correct.mp3"></audio>
+
+    <!-- Wrong GameShow sound -->
+    <audio id="wrongSound" preload="auto" playsinline
+           src="https://www.myinstants.com/media/sounds/wrong_5.mp3"></audio>
+
+    <!-- Buttons -->
+    <button id="btnCorrect" onclick="playSound('correct')">✅ Correct (1)</button>
+    <button id="btnWrong" onclick="playSound('wrong')">❌ Wrong (2)</button>
   </div>
 
-
   <script>
-    function playBoth() {
-      const iframes = document.querySelectorAll("iframe");
-      iframes.forEach(frame => {
-        frame.src = frame.src; // reloads both frames to trigger sound
-      });
+    const correctSound = document.getElementById('correctSound');
+    const wrongSound = document.getElementById('wrongSound');
+
+    function playSound(type) {
+      try {
+        if (type === 'correct') {
+          correctSound.currentTime = 0;
+          correctSound.play();
+        } else if (type === 'wrong') {
+          wrongSound.currentTime = 0;
+          wrongSound.play();
+        }
+      } catch (err) {
+        console.warn('Playback failed:', err);
+      }
     }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (event) => {
+      if (event.key === '1') {
+        event.preventDefault();
+        playSound('correct');
+      } else if (event.key === '2') {
+        event.preventDefault();
+        playSound('wrong');
+      }
+    });
   </script>
 </body>
 </html>
-
